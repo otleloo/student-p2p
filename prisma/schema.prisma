@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum CourseCategory {
+  BACHELORS
+  PHD
+  MASTERS
+  DIPLOMA
+  CERTIFICATE
+}
+
+model User {
+  id                 String     @id @default(uuid())
+  username           String     @unique
+  registrationNumber String?    @unique
+  email              String     @unique
+  password           String
+  avatar             String?
+  profileBg          String?
+  bio                String?
+  program            Program?   @relation(fields: [programId], references: [id])
+  programId          String?
+  balance            Int        @default(2000)
+  spinBalance        Int        @default(1)
+  lastSpinDate       DateTime?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  createdCourses     Course[]
+  createdResources   Resource[]
+  bookings           Booking[]
+  downloads          Download[]
+  role               Role      @default(USER)
+  winnings           Winnings[]
+  notifications      Notification[]
+  losses             Loss[]
+}
+
+model Loss {
+  id        String   @id @default(uuid())
+  amount    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  message   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Winnings {
+  id        String   @id @default(uuid())
+  amount    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// Renamed from Course to Program to better reflect its purpose
+model Program {
+  id         String         @id @default(uuid())
+  courseCode String         @unique
+  courseName String
+  school     String
+  category   CourseCategory
+  users      User[]
+}
+
+enum TokenType {
+  SILVER
+  GOLD
+  DIAMOND
+}
+
+model Course {
+  id          String    @id @default(uuid())
+  unit        String
+  title       String
+  description String
+  tokenCost   Int       // Changed from price Float to tokenCost Int
+  tokenType   TokenType // New field for token type
+  dateTime    DateTime
+  venueId     String
+  venue       Venue    @relation(fields: [venueId], references: [id])
+  durationHours Int
+  durationMinutes Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  creator     User      @relation(fields: [creatorId], references: [id])
+  creatorId   String
+  bookings    Booking[]
+}
+
+model Resource {
+  id          String   @id @default(uuid())
+  unit        String
+  title       String
+  description String
+  fileUrl     String
+  fileType    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  creator     User     @relation(fields: [creatorId], references: [id])
+  creatorId   String
+  downloads   Download[] // Add this line
+}
+
+model Venue {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  courses   Course[]
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
+  bookedAt  DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model CentralFund {
+  id          String @id @default(cuid())
+  silverCoins Int    @default(0)
+  goldCoins   Int    @default(0)
+  diamondCoins Int   @default(0)
+}
+
+model Download {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  resource    Resource @relation(fields: [resourceId], references: [id])
+  resourceId  String
+  downloadedAt DateTime @default(now())
+
+  @@unique([userId, resourceId]) // A user can download a resource only once
+}
