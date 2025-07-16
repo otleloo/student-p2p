@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  },
   /* config options here */
 };
 

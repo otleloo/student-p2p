@@ -1,15 +1,18 @@
 
 
+export const dynamic = 'force-dynamic';
+
 import { prisma } from "@/lib/prisma";
 import { RetroCard } from "@/components/mvpblocks/retro-card";
 import { HomeClientContent } from "@/components/HomeClientContent";
 import { auth } from "@/lib/auth";
 import { searchCourses } from "@/app/actions/searchCourses";
 
-export default async function HomePage({ searchParams }: { searchParams?: { [key: string]: string | string[] } }) {
+export default async function HomePage({ searchParams }: { searchParams?: { query?: string } }) {
   const session = await auth();
   const userId = session?.user?.id;
-  const searchQuery = searchParams.query || "";
+  const query = searchParams?.query;
+  const searchQuery = query || "";
 
   let courses = [];
   if (searchQuery) {

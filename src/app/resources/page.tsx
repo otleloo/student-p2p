@@ -1,11 +1,13 @@
+export const dynamic = 'force-dynamic';
+
 import { getAllResources } from "@/app/actions/getAllResources";
 import { ResourceFilter } from "@/components/ResourceFilter";
 import { ResourceList } from "@/components/ResourceList";
 
 export default async function ResourcesPage({ searchParams }: { searchParams?: { query?: string; fileType?: string; unit?: string } }) {
-  const query = searchParams.query;
-  const fileType = searchParams.fileType;
-  const unit = searchParams.unit;
+  const query = searchParams?.query;
+  const fileType = searchParams?.fileType;
+  const unit = searchParams?.unit;
 
   const { resources, error } = await getAllResources(query, fileType, unit);
 

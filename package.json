@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "cross-env NEXTAUTH_URL=\"http://localhost:3000\" AUTH_TRUST_HOST=\"localhost\" next build",
+    "start": "cross-env NEXTAUTH_URL=\"http://localhost:3000\" AUTH_TRUST_HOST=\"localhost\" next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
@@ -52,6 +52,7 @@
     "@types/node": "^20.19.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "prisma": "^6.11.1",

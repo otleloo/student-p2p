@@ -91,4 +91,8 @@ export const config: NextAuthConfig = {
   },
 };
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...config,
+  basePath: "/api/auth", // Explicitly set basePath
+  url: process.env.NEXTAUTH_URL, // Pass NEXTAUTH_URL directly
+});

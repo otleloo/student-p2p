@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 export const authConfig = {
+  trustHost: true,
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
@@ -49,8 +50,9 @@ export const authConfig = {
         return {
           id: user.id,
           email: user.email,
-          name: user.username,
-          // Add other user properties you want to expose in the session
+          name: user.username, // Ensure name is included
+          role: user.role, // Include role
+          image: user.avatar, // Include avatar
         };
       },
     }),
